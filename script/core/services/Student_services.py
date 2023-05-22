@@ -2,44 +2,44 @@ from fastapi import APIRouter
 from script.core.handler.handler_student import add_student
 from script.schema import Student
 from script.utility.mongoDB import Students
+from script.core.handler.handler_student import add_student, get_all_students, update_student, delete_student
 
 student_router = APIRouter()
 
 
 # Insert a student
 @student_router.post("/addStudent/")
-def add_student(student: Student):
-    student_dict = student.dict()
-    result = Students.insert_one(student_dict)
-    return {"id": "Student added successfully"}
+def course(student: Student):
+    try:
+        return add_student(student)
+    except Exception as e:
+        return {"error": str(e)}
 
 
 # Get all students from Mongodb
 @student_router.get("/getAllStudents")
-async def get_all_students():
-    students = Students.find({})
-    details = []
-    for document in students:
-        detail = {'id': document['id'], 'name': document['name'], 'address': document['address']}
-        details.append(detail)
-    return {"details": details}
-
-
-# updating the student record
-@student_router.put("/updateStudent/{std_id}")
-def update_student(std_id: int, student: Student):
-    result = Students.update_one({"id": std_id}, {"$set": student.dict()})
-    if result.modified_count == 1:
-        return {"message": "Student updated successfully"}
-    else:
-        return {"error": "Student not found"}
-
-
-# Delete Student
-@student_router.delete("/deleteStudentById/{std_id}")
-def delete_student(std_id: int):
+def course():
     try:
-        Students.delete_one({"id": std_id})
-        return {"message": "Student deleted successfully"}
+        return get_all_students()
     except Exception as e:
-        return {"error": "Student not found"}
+        return {"error": str(e)}
+
+        # updating the student record
+
+
+@student_router.put("/updateStudent/{std_id}")
+def course(std_id: int, student: Student):
+    try:
+        return update_student(std_id, student)
+    except Exception as e:
+        return {"error": str(e)}
+
+        # Delete Student
+
+
+@student_router.delete("/deleteStudentById/{std_id}")
+def course(std_id: int):
+    try:
+        return delete_student(std_id)
+    except Exception as e:
+        return {"error": str(e)}
