@@ -1,9 +1,7 @@
 from pydantic import BaseModel
 
 
-# Model for a Student
-class Student(BaseModel):
-    id: int
+class StudentDatabase(BaseModel):
     name: str
-    address: str
-    # phone: int
+    age: int
+    course: str

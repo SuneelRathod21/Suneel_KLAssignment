@@ -1,16 +1,43 @@
-def add_student(self, input_details):
-    try:
-        # All Logic here
-        print(input_details)
-        res = self.mongo_obj.insert_record(input_details)
-        # db = client.interns_b2_23
-        # student_instance = db.Suneel_Rathod
-        # student_instance.insert_one(student.dict())
-        if res:
+from script.utility.mongoDB import Mongodb
+from script.schema import StudentDatabase
 
-            return {"message": "Student added successfully", "status": "success"}
-        else:
-            return {'message': "", "status": "failed"}
-    except Exception as e:
-        # Log the exception
-        return {'message': "", "status": "failed", "error": str(e)}
+
+class StudentHandler:
+
+    def __init__(self):
+        self.student_obj = Mongodb()
+
+    def add_new_student(self, stud: StudentDatabase):
+        try:
+
+            if self.student_obj.get_data_name(stud.name):
+                return {"message": "student already exist"}
+            self.student_obj.add_data(stud)
+            return {"message": " new student added successfully"}
+        except Exception as e:
+            return {"Error": e}
+
+    def view_all_data(self):
+        try:
+            if not self.student_obj.get_data():
+                return {"message": "empty"}
+            return self.student_obj.get_data()
+        except Exception as e:
+            return {"message": e}
+
+    def del_student(self):
+        try:
+            if not self.student_obj.del_data():
+                return {"message":"doesn't exist"}
+            return self.student_obj.del_data()
+        except Exception as e:
+            return {"message": e}
+
+    def cal_avg_age(self):
+        try:
+            return self.student_obj.aggregate()
+        except Exception as e:
+            return {"Error": e}
+
+
+handler_obj = StudentHandler()
